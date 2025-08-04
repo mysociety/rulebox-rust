@@ -4,6 +4,12 @@ Python bindings for RuleBox - a regex-based text labeling system written in Rust
 
 See the main [project README](../README.md) for full documentation and usage examples.
 
+# Install
+
+```
+uv add git+https://github.com/mysociety/rulebox-rust.git#subdirectory=rulebox-python
+```
+
 ## Quick Development
 
 From the project root:
