@@ -1,0 +1,26 @@
+#!/bin/bash
+# script/clean
+# Clean build artifacts and caches
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+echo "==> Cleaning build artifacts..."
+
+# Clean Rust build artifacts
+rm -rf target/
+
+# Clean Python artifacts
+cd rulebox-python
+rm -rf .pytest_cache/
+rm -rf build/
+rm -rf *.egg-info/
+rm -rf dist/
+
+# Clean Python cache files
+find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
+find . -name "*.pyc" -delete 2>/dev/null || true
+find . -name "*.pyo" -delete 2>/dev/null || true
+
+echo "==> Clean complete!"

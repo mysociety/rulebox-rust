@@ -1,0 +1,26 @@
+#!/bin/bash
+# script/help
+# Show available development commands
+
+echo "RuleBox Development Scripts"
+echo ""
+echo "Setup and build:"
+echo "  script/setup           Set up development environment"
+echo "  script/build [type]    Build the Python extension"
+echo "                         Types: dev (default), release, wheel"
+echo ""
+echo "Testing:"
+echo "  script/test [type]     Run tests"
+echo "                         Types: all (default), unit, integration, typing, mypy, coverage"
+echo ""
+echo "Development:"
+echo "  script/console         Start interactive Python console with rulebox loaded"
+echo ""
+echo "Maintenance:"
+echo "  script/clean           Clean build artifacts and caches"
+echo "  script/help            Show this help message"
+echo ""
+echo "Quick start:"
+echo "  1. script/setup        # Set up everything"
+echo "  2. script/test         # Run tests to verify"
+echo "  3. script/console      # Interactive development"

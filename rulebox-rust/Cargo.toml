@@ -1,0 +1,43 @@
+[package]
+name = "rulebox-rust"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1"
+regex = "1.11.1"
+uuid = { version = "1", features = ["v7", "serde"] }
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+
+[[bench]]
+name = "assign_labels_bench"
+harness = false
+
+# Performance optimizations
+[profile.release]
+# Enable maximum optimizations
+opt-level = 3
+# Enable link-time optimization for better performance
+lto = true
+# Reduce binary size and improve performance
+codegen-units = 1
+# Enable fat link-time optimization (more aggressive)
+# lto = "fat"  # Alternative to 'true' for even more aggressive optimization
+
+[profile.bench]
+# Inherit from release profile for consistent benchmarking
+inherits = "release"
+
+# Faster debug builds for development
+[profile.dev]
+# Slightly optimize debug builds for better performance during development
+opt-level = 1
+# Enable debug info
+debug = true
+
+# Fast compilation profile for development
+[profile.dev.package."*"]
+opt-level = 3

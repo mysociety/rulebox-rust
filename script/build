@@ -1,0 +1,40 @@
+#!/bin/bash
+# script/build
+# Build the Python extension
+
+set -e
+
+cd "$(dirname "$0")/../rulebox-python"
+
+# Ensure virtual environment exists
+if [ ! -d ".venv" ]; then
+    echo "Virtual environment not found. Run script/setup first."
+    exit 1
+fi
+
+# Activate virtual environment
+source .venv/bin/activate
+
+case "${1:-dev}" in
+    "dev"|"develop")
+        echo "==> Building Python extension for development..."
+        maturin develop
+        ;;
+    "release")
+        echo "==> Building release wheel..."
+        maturin build --release
+        ;;
+    "wheel")
+        echo "==> Building wheel..."
+        maturin build
+        ;;
+    *)
+        echo "Usage: script/build [dev|release|wheel]"
+        echo "  dev      - Build for development (default)"
+        echo "  release  - Build optimized release wheel"  
+        echo "  wheel    - Build regular wheel"
+        exit 1
+        ;;
+esac
+
+echo "==> Build complete!"

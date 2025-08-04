@@ -1,0 +1,44 @@
+#!/bin/bash
+# script/test
+# Run the test suite
+
+set -e
+
+cd "$(dirname "$0")/../rulebox-python"
+
+# Ensure virtual environment exists
+if [ ! -d ".venv" ]; then
+    echo "Virtual environment not found. Run script/setup first."
+    exit 1
+fi
+
+# Activate virtual environment
+source .venv/bin/activate
+
+# Parse command line arguments
+case "${1:-all}" in
+    "unit")
+        echo "==> Running unit tests..."
+        pytest tests/test_rulebox.py -v
+        ;;
+    "integration")
+        echo "==> Running integration tests..."
+        pytest tests/test_integration.py -v
+        ;;
+    "typing")
+        echo "==> Running typing tests..."
+        pytest tests/test_typing.py -v
+        ;;
+    "mypy")
+        echo "==> Running type checking with mypy..."
+        mypy tests/test_typing.py
+        ;;
+    "cov"|"coverage")
+        echo "==> Running tests with coverage..."
+        pytest tests/ -v --cov=rulebox --cov-report=term-missing
+        ;;
+    "all"|*)
+        echo "==> Running all tests..."
+        pytest tests/ -v
+        ;;
+esac

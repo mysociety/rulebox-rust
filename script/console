@@ -1,0 +1,33 @@
+#!/bin/bash
+# script/console
+# Open an interactive Python console with the rulebox module loaded
+
+set -e
+
+cd "$(dirname "$0")/../rulebox-python"
+
+# Ensure virtual environment exists
+if [ ! -d ".venv" ]; then
+    echo "Virtual environment not found. Run script/setup first."
+    exit 1
+fi
+
+# Activate virtual environment
+source .venv/bin/activate
+
+echo "==> Starting Python console with rulebox module loaded..."
+echo "    The RuleBox class is available as 'RuleBox'"
+echo "    Example: rulebox = RuleBox.from_path('path/to/rules.json')"
+echo ""
+
+python3 -c "
+from rulebox import RuleBox
+print('RuleBox imported successfully!')
+print('Available methods:')
+print('  - RuleBox.from_path(path)')
+print('  - rulebox.assign_labels(text)')  
+print('  - rulebox.assign_labels_vector(texts)')
+print()
+import code
+code.interact(local=locals())
+"
