@@ -19,8 +19,9 @@ script/console
 
 ## Installation
 
-### From Source
-
+```
+uv add git+https://github.com/mysociety/rulebox-rust.git#subdirectory=rulebox-python
+```
 
 ## Usage
 
