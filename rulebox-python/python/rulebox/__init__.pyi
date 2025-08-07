@@ -4,7 +4,7 @@ Type stubs for the rulebox module.
 This module provides Python bindings for the Rust-based RuleBox text labeling engine.
 """
 
-from typing import List, Union
+from typing import List, Union, Collection
 from pathlib import Path
 
 class RuleBox:
@@ -54,7 +54,7 @@ class RuleBox:
         """
         ...
 
-    def assign_labels_vector(self, texts: List[str]) -> List[List[str]]:
+    def assign_labels_vector(self, texts: Collection[str]) -> Collection[List[str]]:
         """
         Assign labels to multiple text strings efficiently.
 
