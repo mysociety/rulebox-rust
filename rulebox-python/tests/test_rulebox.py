@@ -5,6 +5,7 @@ Tests for the RuleBox Python bindings.
 import json
 import tempfile
 import os
+from pathlib import Path
 import pytest
 from rulebox import RuleBox
 
@@ -121,6 +122,36 @@ class TestRuleBoxBasic:
             assert "Failed to load RuleBox" in str(exc_info.value)
         finally:
             os.unlink(invalid_file)
+
+    def test_from_path_with_string(self, simple_rules_file):
+        """Test from_path works with string paths."""
+        # simple_rules_file is already a string path
+        rulebox = RuleBox.from_path(simple_rules_file)
+        assert isinstance(rulebox, RuleBox)
+
+        # Verify it actually works by testing a simple case
+        labels = rulebox.assign_labels("Hello world")
+        assert "greeting" in labels
+
+    def test_from_path_with_pathlib_path(self, simple_rules_file):
+        """Test from_path works with pathlib.Path objects."""
+        path_obj = Path(simple_rules_file)
+        rulebox = RuleBox.from_path(path_obj)
+        assert isinstance(rulebox, RuleBox)
+
+        # Verify it actually works by testing a simple case
+        labels = rulebox.assign_labels("Hello world")
+        assert "greeting" in labels
+
+    def test_from_path_invalid_type(self):
+        """Test from_path raises appropriate error for invalid types."""
+        with pytest.raises(TypeError) as exc_info:
+            RuleBox.from_path(123)  # Neither string nor Path-like
+        assert "path must be a string or Path-like object" in str(exc_info.value)
+
+        with pytest.raises(TypeError) as exc_info:
+            RuleBox.from_path(None)
+        assert "path must be a string or Path-like object" in str(exc_info.value)
 
 
 class TestAssignLabels:

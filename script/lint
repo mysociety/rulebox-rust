@@ -1,0 +1,7 @@
+#!/bin/bash
+# script/lint
+# Lint the Python code
+
+cargo fmt
+uvx ruff format .
+uvx ruff check . --fix
