@@ -16,6 +16,13 @@ class RuleBox:
     """
 
     @staticmethod
+    def from_json(json: str) -> "RuleBox":
+        """
+        Load a RuleBox from a JSON string.
+        """
+        ...
+
+    @staticmethod
     def from_path(path: Union[str, Path]) -> "RuleBox":
         """
         Load a RuleBox from a JSON rules file.

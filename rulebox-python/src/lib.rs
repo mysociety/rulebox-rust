@@ -11,18 +11,25 @@ pub struct RuleBox {
 
 #[pymethods]
 impl RuleBox {
+    /// Create a RuleBox from a JSON string
+    #[staticmethod]
+    fn from_json(json: String) -> PyResult<Self> {
+        let rulebox = RustRuleBox::from_json(&json)
+            .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))?;
+        Ok(RuleBox { inner: rulebox })
+    }
+
     /// Create a RuleBox from a JSON file path (accepts either string or Path object)
     #[staticmethod]
     fn from_path(path: Bound<'_, PyAny>) -> PyResult<Self> {
         let path_str = extract_path_string(&path)
-            .map_err(|e| PyErr::new::<pyo3::exceptions::PyTypeError, _>(e))?;
+            .map_err(|e| PyErr::new::<pyo3::exceptions::PyTypeError, _>(e.to_string()))?;
 
         match RustRuleBox::from_path(&path_str) {
             Ok(rulebox) => Ok(RuleBox { inner: rulebox }),
-            Err(e) => Err(PyErr::new::<pyo3::exceptions::PyIOError, _>(format!(
-                "Failed to load RuleBox from path '{}': {}",
-                path_str, e
-            ))),
+            Err(e) => Err(PyErr::new::<pyo3::exceptions::PyIOError, _>(
+                format!("Failed to load RuleBox from path '{}': {}", path_str, e).to_string(),
+            )),
         }
     }
 

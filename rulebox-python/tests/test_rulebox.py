@@ -153,6 +153,75 @@ class TestRuleBoxBasic:
             RuleBox.from_path(None)
         assert "path must be a string or Path-like object" in str(exc_info.value)
 
+    def test_from_json_success(self):
+        """Test successful loading from a JSON string."""
+        rules_json = json.dumps(
+            [
+                {
+                    "label": "greeting",
+                    "rule": {
+                        "or_patterns": [
+                            {"pattern": "\\bhello\\b", "flags": ["i"]},
+                            {"pattern": "\\bhi\\b", "flags": ["i"]},
+                        ]
+                    },
+                },
+                {"label": "question", "rule": {"and_patterns": [{"pattern": "\\?"}]}},
+            ]
+        )
+
+        rulebox = RuleBox.from_json(rules_json)
+        assert isinstance(rulebox, RuleBox)
+
+        # Verify it actually works by testing functionality
+        labels = rulebox.assign_labels("Hello world")
+        assert "greeting" in labels
+
+        labels = rulebox.assign_labels("What's up?")
+        assert "question" in labels
+
+    def test_from_json_invalid_json(self):
+        """Test error handling for invalid JSON string."""
+        with pytest.raises(ValueError) as exc_info:
+            RuleBox.from_json("invalid json content")
+        assert "expected value" in str(exc_info.value)
+
+    def test_from_json_empty_rules(self):
+        """Test loading from empty rules array."""
+        rules_json = json.dumps([])
+
+        rulebox = RuleBox.from_json(rules_json)
+        assert isinstance(rulebox, RuleBox)
+
+        # Should return no labels for any text
+        labels = rulebox.assign_labels("Hello world")
+        assert len(labels) == 0
+
+    def test_from_json_vs_from_path_equivalence(self, simple_rules_file):
+        """Test that from_json and from_path produce equivalent results."""
+        # Load from file
+        rulebox_from_path = RuleBox.from_path(simple_rules_file)
+
+        # Load the same rules from JSON string
+        with open(simple_rules_file, "r") as f:
+            rules_json = f.read()
+        rulebox_from_json = RuleBox.from_json(rules_json)
+
+        # Test that both produce the same results
+        test_texts = [
+            "Hello world",
+            "What's your email?",
+            "Contact me at test@example.com",
+            "Plain text with no matches",
+        ]
+
+        for text in test_texts:
+            labels_from_path = set(rulebox_from_path.assign_labels(text))
+            labels_from_json = set(rulebox_from_json.assign_labels(text))
+            assert labels_from_path == labels_from_json, (
+                f"Results differ for text: '{text}'"
+            )
+
 
 class TestAssignLabels:
     """Test the assign_labels method."""

@@ -2,6 +2,9 @@
 # script/lint
 # Lint the Python code
 
+cd rulebox-rust
+cargo fmt
+cd ../rulebox-python
 cargo fmt
 uvx ruff format .
 uvx ruff check . --fix

@@ -146,11 +146,15 @@ impl LabeledText {
 pub struct RuleBox(pub Vec<LabelRule>);
 
 impl RuleBox {
-    pub fn from_path(path: &str) -> Result<Self, Box<dyn std::error::Error>> {
-        let json = fs::read_to_string(path)?;
-        let mut rulebox: RuleBox = serde_json::from_str(&json)?;
+    pub fn from_json(json: &str) -> Result<Self, Box<dyn std::error::Error>> {
+        let mut rulebox: RuleBox = serde_json::from_str(json)?;
         rulebox.compile()?;
         Ok(rulebox)
+    }
+
+    pub fn from_path(path: &str) -> Result<Self, Box<dyn std::error::Error>> {
+        let json = fs::read_to_string(path)?;
+        Self::from_json(&json)
     }
 
     pub fn compile(&mut self) -> Result<(), String> {
